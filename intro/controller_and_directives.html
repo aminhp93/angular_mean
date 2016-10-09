@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Controller and Directives</title>
+	<style type="text/css">
+	/*	.left{
+			display: inline-block;
+			width: 200px;
+			background-color: red;
+		}
+		.right{
+			display: inline-block;
+			width: 300px;
+			background-color: red;
+		}*/
+		.red{
+			background-color: red;
+			color: white;
+		}
+		.blue{
+			background-color: blue;
+			color: white
+		}
+	</style>
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('app', []);
+
+		app.controller('appController', function($scope){
+			$scope.food = [{'name': 'Pizza'}, {'name': "BBQ"},{'name': 'Fries'},{'name': 'Salad'},{'name': 'Steak'}];
+
+			$scope.addFood = function(){
+				$scope.food.push($scope.newFood);
+				console.log($scope.newFood);
+				$scope.newFood = {}
+			}
+		})
+
+
+
+	</script>
+</head>
+<body>
+	<div ng-controller="appController">
+		
+		<div class="left">
+			<form>
+				Favorite Food<input type="text" ng-model="newFood.name">
+				<input type="submit" value="Add food" ng-click="addFood()">
+				<div>Current typing: <span>{{ newFood.name }}</span><div>
+			</form>
+		</div>
+
+		<h1>Which food do you choose?</h1>
+		<div class="right">
+			<input type="text" placeholder="filter" ng-model="searchText">
+			<div ng-repeat="i in food | filter:searchText">{{ i.name }}</div>
+		</div>
+		<div ng-hide="newFood.name">
+			<div class="red">I will be hiden</div>
+		</div>
+		<div ng-show="newFood.name">
+			<div class="blue">I will be shown <span class="red">{{ newFood.name }}</span></div>
+		</div>
+		<div ng-if="newFood.name">
+			<h1>You are doing a wonderful thing</h1>
+		</div>
+
+		
+	
+		
+
+	</div>
+
+</body>
+</html>
