@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Controlling user</title>
+	<style type="text/css">
+		span{
+			width: 150px;
+			display: inline-block;
+		}
+	</style>
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('app', []);
+
+		app.controller('userController', function($scope){
+			$scope.users = [];
+
+			
+
+			$scope.addUser = function(){
+				$scope.date = new Date();
+				// console.log($scope.date);
+				// console.log($scope.newUser);
+				var new_user = Object.assign($scope.newUser, {date: $scope.date});
+				$scope.users.push(new_user);
+				// console.log($scope.users);
+				$scope.newUser = {};
+			}
+
+			$scope.deleteUser = function(index){
+				$scope.users.splice(index, 1);
+			}
+		})
+
+	</script>
+</head>
+<body>
+	<h1>Make a sortable and searchable table</h1>
+	<div ng-controller="userController">
+		<form>
+			<div><span>First name: </span><input type="text" ng-model="newUser.first_name"></div>
+			<div><span>Last name: </span><input type="" ng-model="newUser.last_name"></div>
+			<div><span>Favorite language: </span><input type="text" ng-model="newUser.language"></div>
+			<input type="hidden" ng-model="newUser.date" value="{{date}}">
+			<input type="submit" value="Create user" ng-click="addUser()">
+		</form>
+		<table>
+			<tr>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Language</th>
+				<th>Date</th>
+				<th>Actions</th>
+			</tr>
+			<tr ng-repeat="i in users | filter:newUser:strict | orderBy: 'first_name' track by $index">
+				<td>{{i.first_name}}</td>
+				<td>{{i.last_name}}</td>
+				<td>{{i.language}}</td>
+				<td>{{i.date | date:'yyyy-MM-dd'}}</td>
+				<td><input type="submit" value="Delete user" ng-click="deleteUser($index)"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
