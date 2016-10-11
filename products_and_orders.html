@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html ng-app='app'>
+<head>
+	<title>Products and Orders</title>
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('app', []);
+
+		app.factory('productFactory', function(){
+			var factory = {};
+			var products = [];
+
+			factory.index = function(callback){
+				callback(products);
+			}
+
+			factory.create = function(product, callback){
+				if (product.price && Number(parseFloat(product.price)) == product.price){
+					Object.assign(product, {number: 10});
+					products.push(product);
+					callback(products);
+				}
+			}
+
+			factory.delete = function(id, callback){
+				products.splice(id, 1);
+				callback(products);
+			}
+
+			factory.order = function(id, callback){
+				if (products[id].number > 1){
+					products[id].number -= 1;
+					callback(products);
+				}	
+			}
+
+			return factory;
+		})
+
+		app.controller('productsController', function($scope, productFactory){
+			// $scope.products = [];
+			function getProduct(data){
+				$scope.products = data;
+			}
+			$scope.addProduct = function(){
+				// if (parseFloat($scope.newProduct.price) == $scope.newProduct.price){
+				// 	$scope.products.push($scope.newProduct);					
+				// }
+				productFactory.create($scope.newProduct, getProduct);
+				$scope.newProduct = {};
+			}
+			$scope.deleteProduct = function(id){
+				// $scope.products.splice(id, 1);
+				productFactory.delete(id, getProduct);
+			}
+		})
+
+		app.controller('ordersController', function($scope, productFactory){
+			function getProduct(data){
+				$scope.products = data;
+			}
+
+			productFactory.index(getProduct);
+			$scope.addOrder = function(id){
+				productFactory.order(id, getProduct);
+			}
+		})
+	</script>
+</head>
+<body>
+	<div ng-controller="productsController">
+		<form>
+			Product Name: <input type="text" ng-model="newProduct.name">
+			Product Price: <input type="text" ng-model="newProduct.price">
+			<input type="submit" value="Add Product" ng-click="addProduct()">
+		</form>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Price</th>
+				<th>Actions</th>
+			</tr>
+			<tr ng-repeat="i in products track by $index">
+				<td>{{ i.name }}</td>
+				<td>{{ i.price }}</td>
+				<td><button ng-click="deleteProduct($index)">Delete Product</button></td>
+			</tr>
+		</table>
+		</div>
+
+		<div ng-controller="ordersController">
+			<table>
+				<tr>
+					<th>Name</th>
+					<th>Price</th>
+					<th>Qty</th>
+					<th>Actions</th>
+				</tr>
+				<tr ng-repeat="j in products track by $index">
+					<td>{{ j.name }}</td>
+					<td>{{ j.price }}</td>
+					<td>{{ j.number }}</td>
+					<td><button ng-click="addOrder($index)">Buy</button></td>
+				</tr>
+			</table>
+		</div>
+	
+
+</body>
+</html>

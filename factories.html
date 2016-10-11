@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+	<title>Factory</title>
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript">
+		var myAppModule = angular.module('myApp', []);
+
+		myAppModule.factory('studentFactory', function(){
+			var students = [
+				{name: 'Mike', age: 34},
+				{name: 'Mike1', age: 14},
+				{name: 'Mike2', age: 24},
+			];
+			var factory = {};
+
+			factory.getStudents = function(callback){
+				callback(students);
+			}
+			return factory;
+		})
+		
+		myAppModule.controller('studentsController', ['$scope', 'studentFactory', function($scope, studentFactory){
+			$scope.students = [];
+			studentFactory.getStudents(function(data){
+				$scope.students = data;
+			})
+		}])
+
+
+	</script>
+</head>
+<body>
+	<div ng-controller="studentsController">
+		<div ng-repeat="i in students">
+			<li>{{i.name}}</li>
+			<li>{{i.age}}</li>
+		</div>
+	</div>
+
+</body>
+</html>

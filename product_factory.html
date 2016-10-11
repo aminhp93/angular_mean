@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Product Factory</title>
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('app', []);
+
+		app.factory('productFactory', function($http){
+			var factory = {};
+			var products = [];
+
+			// factory.index = function(callback){
+			// 	callback(products);
+			// }
+			factory.create = function(product, callback){
+				console.log(parseFloat(product.price));
+				console.log(Number(parseFloat(product.price)));
+				if (product.price && Number(parseFloat(product.price)) == product.price){
+
+					products.push(product);
+					callback(products);
+				}
+			}
+			factory.delete = function(id, callback){
+				products.splice(id, 1);
+				callback(products);
+			}
+			return factory;
+		})
+
+		app.controller('productController', function($scope, productFactory){
+			
+			// $scope.products = [];
+			function getProduct(data){
+				$scope.products = data;
+			}
+
+			$scope.addProduct = function(){
+				// $scope.products.push($scope.newProduct);
+				// $scope.newProduct = {};
+				productFactory.create($scope.newProduct, getProduct);
+				$scope.newProduct = {}
+			}
+
+			$scope.deleteProduct = function(index){
+				productFactory.delete(index ,getProduct);
+			}
+		})
+		app.filter('myFilter')
+	</script>
+</head>
+<body>
+	<div ng-controller='productController'>
+		<form>
+			Product Name: <input type="text" ng-model="newProduct.name">
+			Product Price: <input type="text" ng-model="newProduct.price">
+			<input type="submit" ng-click="addProduct()" value="Add Product">
+		</form>
+
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Price</th>
+				<th>Actions</th>
+			</tr>
+			<tr ng-repeat="i in products track by $index">
+				<td>{{ i.name }}</td>
+				<td>{{ i.price }}</td>
+				<td><button ng-click="deleteProduct($index)">Delete</button></td>
+			</tr>
+		</table>
+
+
+	</div>
+</body>
+</html>
