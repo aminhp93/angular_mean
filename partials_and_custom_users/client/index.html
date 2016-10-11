@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Paritals and Custom Users</title>
+	<script type="text/javascript" src="angular/angular.js"></script>
+	<script type="text/javascript" src="angular-route/angular-route.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('app', ['ngRoute']);
+
+		app.config(function($routeProvider){
+			$routeProvider
+			.when('/users', {
+				templateUrl: 'partials/customizeUsers.html'
+			})
+			.when('/list', {
+				templateUrl: 'partials/userList.html'
+			})
+			.otherwise({
+				redirectTo: '/'
+			})
+		})
+
+		app.factory('userFactory', function(){
+			var factory = {};
+			var users = [];
+
+			factory.index = function(callback){
+				callback(users);
+			}
+
+			factory.create = function(user, callback){
+				users.push(user);
+				callback(users);
+			}
+
+			factory.delete = function(id, callback){
+				users.splice(id, 1);
+				callback(users);
+			}
+
+			return factory
+		})
+
+		app.controller('customizedUsersController', function($scope, userFactory){
+			// $scope.users = [];
+			function getUser(data){
+				$scope.users = data;
+			}
+			
+			userFactory.index(getUser);
+
+			$scope.addUser = function(){
+				// $scope.users.push($scope.newUser);
+				// console.log($scope.users);
+				userFactory.create($scope.newUser, getUser);
+				$scope.newUser = {};
+			}
+
+			$scope.deleleUser = function(id){
+				// $scope.users.splice(id, 1);
+				userFactory.delete(id, getUser);
+			}
+		})
+
+		app.controller('userListsController', function($scope, userFactory){
+			// $scope.users = [];
+			function getUser(data){
+				$scope.users = data;
+			}
+			
+			userFactory.index(getUser);		
+		})
+
+	</script>
+</head>
+<body>
+	<h1>Amin</h1>
+	<a href="#/users">Customize Users</a> <a href="#/list">User List</a>
+	<div ng-view>
+		<!-- Paritals will load here -->
+	</div>
+	
+	
+
+</body>
+</html>
