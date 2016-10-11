@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Players and Teams</title>
+	<script type="text/javascript" src="angular/angular.js"></script>
+	<script type="text/javascript" src="angular-route/angular-route.js"></script>
+	<script type="text/javascript">
+		var app = angular.module('app', ['ngRoute']);
+
+		app.config(function($routeProvider){
+			$routeProvider
+			.when('/players', {
+				templateUrl: 'partials/players.html'
+			})
+			.when('/teams', {
+				templateUrl: 'partials/teams.html'
+			})
+			.when('/associations', {
+				templateUrl: 'partials/associations.html'
+			})
+			.otherwise({
+				redirectTo: '/'
+			})
+		})
+// ==================================================================================
+// END OF CONFIG
+// ==================================================================================
+		app.factory('playerFactory', function(){
+			var factory = {};
+			var players = [];
+
+			factory.index = function(callback){
+				callback(players);
+			}
+
+			factory.addPlayer = function(player, callback){
+				players.push(player);
+				callback(players);
+			}
+
+			factory.deletePlayer = function(id, callback){
+					console.log('2');
+				console.log(id);
+				players.splice(id, 1);
+				callback(players);
+			}
+			factory.addPlayertoTeam = function(info, callback){
+				console.log(info);
+				players[info.playerID].team = info.team;
+				callback(players);
+			}
+			factory.removePlayerFromTeam = function(id, callback){
+				players[id].team = "";
+			}
+
+			return factory;
+		})
+
+		app.factory('teamFactory', function(){
+			var factory = {};
+			var teams = [];
+
+			factory.index = function(callback){
+				callback(teams);
+			}
+
+			factory.addTeam = function(team, callback){
+				teams.push(team);
+				callback(teams);
+			}
+
+			factory.deleteTeam = function(id, callback){
+				teams.splice(id, 1);
+				callback(teams);
+			}
+			return factory;
+		})
+
+// ==================================================================================
+// END OF FACTORY
+// ==================================================================================
+		app.controller('playersController', function($scope, playerFactory){
+			function getPlayer(data){
+				$scope.players = data;
+			}
+
+			playerFactory.index(getPlayer);
+
+			$scope.addPlayer = function(){
+				playerFactory.addPlayer($scope.newPlayer, getPlayer);
+				console.log($scope.players);
+				$scope.newPlayer = {};
+			}
+
+			$scope.deletePlayer = function(id){
+				console.log('1');
+				console.log(id);
+				playerFactory.deletePlayer(id, getPlayer);
+			}
+		})
+
+		app.controller('teamsController', function($scope, teamFactory){
+			function getTeam(data){
+				$scope.teams = data;
+			}
+
+			teamFactory.index(getTeam);
+
+			$scope.addTeam = function(){
+				teamFactory.addTeam($scope.newTeam, getTeam);
+				console.log($scope.teams);
+				$scope.newTeam = {};
+			}
+
+			$scope.deleteTeam = function(id){
+				teamFactory.deleteTeam(id, getTeam);
+			}
+		})
+
+		app.controller('associationsController', function($scope, playerFactory, teamFactory){
+
+			function getPlayer(data){
+				$scope.players = data;
+			}
+			playerFactory.index(getPlayer);
+
+			function getTeam(data){
+				$scope.teams = data;
+			}
+			teamFactory.index(getTeam);
+
+
+			$scope.assign = function(){
+				// $scope.positions.push($scope.newAssign);
+				playerFactory.addPlayertoTeam($scope.newAssign, getPlayer);
+				// console.log($scope.positions);
+				$scope.newAssign = {};
+			}
+
+			$scope.deleteAssign = function(id){
+				console.log('3');
+				playerFactory.removePlayerFromTeam(id);
+			}
+		})
+
+// ==================================================================================
+// END OF CONTROLLER
+// ==================================================================================
+
+	</script>
+</head>
+<body>
+	<a href="#/players">Players</a> <a href="#/teams">Teams</a> <a href="#/associations">Associations</a>
+	<div ng-view>
+		<!-- Partials will load here -->
+	</div>
+
+</body>
+</html>
