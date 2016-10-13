@@ -6,8 +6,8 @@ var express  = require( 'express' ),
     app      = express();
 
 
-app.use( express.static( path.join( root, 'client' )));
-app.use( express.static( path.join( root, 'bower_components' )));
+app.use( express.static( path.join( root, './client' )));
+app.use( express.static( path.join( root, './bower_components' )));
 app.use( bp.json() );
 
 

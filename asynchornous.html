@@ -20,6 +20,17 @@
 			}
 
 
+			// function getResultsPage(pageNumber){
+			// 	pageNumber *= $scope.usersPerPage
+			// 	$http.get('https://api.github.com/users?since=' + pageNumber)
+			// 		.then(function(result){
+			// 			$scope.users = result.data;
+			// 			$scope.totalUsers = result.data.length;
+			// 			console.log($scope.users);
+			// 			console.log($scope.users[0]);
+			// 		})
+			// }
+
 			function getResultsPage(pageNumber){
 				pageNumber *= $scope.usersPerPage
 				$http.get('https://api.github.com/users?since=' + pageNumber)
@@ -30,6 +41,7 @@
 						console.log($scope.users[0]);
 					})
 			}
+
 			getResultsPage(0);
 		})
 	</script>
